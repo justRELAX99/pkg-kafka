@@ -1,8 +1,10 @@
 package entity
 
-import "github.com/confluentinc/confluent-kafka-go/kafka"
+import (
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+)
 
 type Settings struct {
-	KafkaProducer kafka.ConfigMap `json:"kafkaProducer"`
-	KafkaConsumer kafka.ConfigMap `json:"kafkaConsumer"`
+	KafkaProducer cKafka.ConfigMap `json:"kafkaProducer"`
+	KafkaConsumer cKafka.ConfigMap `json:"kafkaConsumer"`
 }

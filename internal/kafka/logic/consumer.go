@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	cKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/internal/kafka/entity"
 	"github.com/enkodio/pkg-kafka/internal/pkg/logger"
 	"github.com/enkodio/pkg-kafka/kafka"
@@ -68,7 +68,6 @@ func (c *consumer) startConsume(syncGroup *entity.SyncGroup, mwFuncs []kafka.Mid
 		default:
 			msg, err := c.ReadMessage(readTimeout)
 			if kafkaErr, ok := errToKafka(err); ok {
-				// Если retriable (но со стороны консумера вроде бы такого нет), то пробуем снова
 				if kafkaErr.Code() == cKafka.ErrTimedOut || kafkaErr.IsRetriable() {
 					continue
 				}

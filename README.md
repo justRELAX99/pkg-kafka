@@ -13,11 +13,13 @@ Golang import:
 import "github.com/enkodio/pkg-kafka/client"
 ```
 
-If you are building for Alpine Linux (musl), `-tags musl` must be specified.
+If you are building for Alpine Linux (musl), `-tags musl` must be specified. 
 
 ```bash
 go build -tags musl ./...
 ```
+For fix error ` undefined reference to __stack_chk_fail'` set environment `CGO_LDFLAGS=-fstack-protector`.
+
 
 Examples
 ========
@@ -25,7 +27,7 @@ Examples
 import (
 	"context"
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	kafkaClient "github.com/enkodio/pkg-kafka/client"
 )
 

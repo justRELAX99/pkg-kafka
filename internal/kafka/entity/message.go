@@ -1,7 +1,7 @@
 package entity
 
 import (
-	cKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/kafka"
 )
 

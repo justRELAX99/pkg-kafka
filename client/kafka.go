@@ -1,7 +1,7 @@
 package client
 
 import (
-	cKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/internal/kafka/logic"
 	"github.com/enkodio/pkg-kafka/internal/pkg/logger"
 	"github.com/enkodio/pkg-kafka/kafka"

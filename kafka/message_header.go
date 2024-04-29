@@ -1,6 +1,8 @@
 package kafka
 
-import "github.com/confluentinc/confluent-kafka-go/kafka"
+import (
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+)
 
 type MessageHeader struct {
 	Key   string `json:"key"`
@@ -46,10 +48,10 @@ func (m *MessageHeaders) SetHeader(key string, value []byte) {
 	})
 }
 
-func (m *MessageHeaders) toKafkaHeaders() []kafka.Header {
-	var headers = make([]kafka.Header, len(*m))
+func (m *MessageHeaders) toKafkaHeaders() []cKafka.Header {
+	var headers = make([]cKafka.Header, len(*m))
 	for i, header := range *m {
-		headers[i] = kafka.Header{
+		headers[i] = cKafka.Header{
 			Key:   header.GetKey(),
 			Value: header.GetValue(),
 		}

@@ -1,7 +1,7 @@
 package kafka
 
 import (
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
 type Message struct {
@@ -28,11 +28,11 @@ func (m *Message) GetBodyAsString() string {
 	return string(m.Body)
 }
 
-func (m *Message) ToKafkaMessage() *kafka.Message {
-	return &kafka.Message{
-		TopicPartition: kafka.TopicPartition{
+func (m *Message) ToKafkaMessage() *cKafka.Message {
+	return &cKafka.Message{
+		TopicPartition: cKafka.TopicPartition{
 			Topic:     &m.Topic,
-			Partition: kafka.PartitionAny},
+			Partition: cKafka.PartitionAny},
 		Value:   m.Body,
 		Headers: m.Headers.toKafkaHeaders(),
 		Key:     m.Key,
