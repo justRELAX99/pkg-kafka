@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/internal/kafka/entity"
 	"github.com/enkodio/pkg-kafka/internal/pkg/logger"
 	"github.com/enkodio/pkg-kafka/kafka"
@@ -26,16 +25,16 @@ type Client struct {
 }
 
 func NewClient(
-	producerConfig cKafka.ConfigMap,
-	consumerConfig cKafka.ConfigMap,
+	producerConfig entity.Config,
+	consumerConfig entity.Config,
 	serviceName string,
 	prefix string,
 ) *Client {
 	consumerConfig["group.id"] = serviceName
 	return &Client{
 		serviceName: serviceName,
-		producer:    newProducer(producerConfig),
-		consumers:   newConsumers(consumerConfig),
+		producer:    newProducer(producerConfig.ToKafkaConfig()),
+		consumers:   newConsumers(consumerConfig.ToKafkaConfig()),
 		topicPrefix: prefix,
 	}
 }

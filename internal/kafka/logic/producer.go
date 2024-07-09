@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"github.com/CossackPyra/pyraconv"
 	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/internal/kafka/entity"
 	"github.com/enkodio/pkg-kafka/internal/pkg/logger"
@@ -23,8 +22,8 @@ func newProducer(config cKafka.ConfigMap) *producer {
 	config["client.id"] = uuid.New().String()
 
 	// FIXME Два костыля, нужно подумать, что делать с тем, что с консула числа маршлятся во float64
-	config["queue.buffering.max.messages"] = int(pyraconv.ToInt64(config["queue.buffering.max.messages"]))
-	config["linger.ms"] = int(pyraconv.ToInt64(config["linger.ms"]))
+	//config["queue.buffering.max.messages"] = int(pyraconv.ToInt64(config["queue.buffering.max.messages"]))
+	//config["linger.ms"] = int(pyraconv.ToInt64(config["linger.ms"]))
 	return &producer{
 		config:    config,
 		syncGroup: entity.NewSyncGroup(),
