@@ -20,10 +20,6 @@ type producer struct {
 
 func newProducer(config cKafka.ConfigMap) *producer {
 	config["client.id"] = uuid.New().String()
-
-	// FIXME Два костыля, нужно подумать, что делать с тем, что с консула числа маршлятся во float64
-	//config["queue.buffering.max.messages"] = int(pyraconv.ToInt64(config["queue.buffering.max.messages"]))
-	//config["linger.ms"] = int(pyraconv.ToInt64(config["linger.ms"]))
 	return &producer{
 		config:    config,
 		syncGroup: entity.NewSyncGroup(),

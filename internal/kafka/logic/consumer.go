@@ -102,3 +102,22 @@ func (c *consumer) rollbackConsumerTransaction(topicPartition cKafka.TopicPartit
 	}
 	return
 }
+
+func (c *consumer) close() {
+	log := logger.GetLogger()
+
+	_, err := c.Commit()
+	if kafkaErr, ok := errToKafka(err); ok && kafkaErr.Code() != cKafka.ErrNoOffset {
+		log.WithError(err).Errorf("cant commit offset for topic: %s", err.Error())
+	}
+	// Отписка от назначенных топиков
+	err = c.Unsubscribe()
+	if err != nil {
+		log.WithError(err).Errorf("cant unsubscribe connection: %s", err.Error())
+	}
+	// Закрытие соединения
+	err = c.Close()
+	if err != nil {
+		log.WithError(err).Errorf("cant close consumer connection: %s", err.Error())
+	}
+}

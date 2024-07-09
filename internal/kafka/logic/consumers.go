@@ -29,12 +29,12 @@ func (c *consumers) getUniqByNameTopicSpecifications() []kafka.TopicSpecificatio
 	topicsMap := make(map[string]struct{}, len(c.consumers))
 	topics := make([]kafka.TopicSpecifications, 0, len(c.consumers))
 
-	for _, consumer := range c.consumers {
-		if _, ok := topicsMap[consumer.Topic]; ok {
+	for i := range c.consumers {
+		if _, ok := topicsMap[c.consumers[i].Topic]; ok {
 			continue
 		}
-		topicsMap[consumer.Topic] = struct{}{}
-		topics = append(topics, consumer.TopicSpecifications)
+		topicsMap[c.consumers[i].Topic] = struct{}{}
+		topics = append(topics, c.consumers[i].TopicSpecifications)
 	}
 	return topics
 }
@@ -50,8 +50,8 @@ func (c *consumers) addNewConsumer(handler kafka.Handler, topicSpecification kaf
 }
 
 func (c *consumers) createKafkaConsumers() error {
-	for _, consumer := range c.consumers {
-		err := consumer.initConsumer(c.config)
+	for i := range c.consumers {
+		err := c.consumers[i].initConsumer(c.config)
 		if err != nil {
 			return errors.Wrap(err, "cant init kafka consumer")
 		}
@@ -60,24 +60,9 @@ func (c *consumers) createKafkaConsumers() error {
 }
 
 func (c *consumers) stopConsumers() {
-	log := logger.GetLogger()
 	c.syncGroup.Close()
-
 	for i := range c.consumers {
-		_, err := c.consumers[i].Commit()
-		if kafkaErr, ok := errToKafka(err); ok && kafkaErr.Code() != cKafka.ErrNoOffset {
-			log.WithError(err).Errorf("cant commit offset for topic: %s", err.Error())
-		}
-		// Отписка от назначенных топиков
-		err = c.consumers[i].Unsubscribe()
-		if err != nil {
-			log.WithError(err).Errorf("cant unsubscribe connection: %s", err.Error())
-		}
-		// Закрытие соединения
-		err = c.consumers[i].Close()
-		if err != nil {
-			log.WithError(err).Errorf("cant close consumer connection: %s", err.Error())
-		}
+		c.consumers[i].close()
 	}
 }
 
