@@ -12,15 +12,10 @@ func NewClient(
 	producerConfig cKafka.ConfigMap,
 	consumerConfig cKafka.ConfigMap,
 	serviceName string,
-	log *logrus.Logger,
+	log logrus.FieldLogger,
 	prefix string,
 ) kafka.Client {
-	if log != nil {
-		logger.SetLogger(log)
-	} else {
-		logger.SetDefaultLogger("debug")
-	}
-
+	logger.SetLogger(log)
 	return logic.NewClient(producerConfig, consumerConfig, serviceName, prefix)
 }
 

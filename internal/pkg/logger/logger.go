@@ -1,36 +1,39 @@
 package logger
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/vm-affekt/logrustash"
 
 	"time"
 )
 
-var logger *logrus.Logger
+const (
+	defaultLogLevel = logrus.DebugLevel
+)
 
-func SetLogger(l *logrus.Logger) {
-	logger = l
-}
+var (
+	defaultFields = logrus.Fields{"tool": "kafka"}
+	logger        *logrus.Entry
+)
 
-func GetLogger() *logrus.Logger {
-	return logger
-}
-
-func SetDefaultLogger(level string) {
-	l := logrus.New()
-	parsedLever, err := logrus.ParseLevel(level)
-	if err != nil {
-		fmt.Println("error when definition logging level:", err)
-		parsedLever = logrus.DebugLevel
+func SetLogger(l logrus.FieldLogger) {
+	if l == nil {
+		l = initDefaultLogger()
 	}
-	l.SetLevel(parsedLever)
+	logger = l.WithFields(defaultFields)
+}
+
+func initDefaultLogger() *logrus.Logger {
+	l := logrus.New()
+	l.SetLevel(defaultLogLevel)
 	l.SetFormatter(
 		&logrustash.LogstashFormatter{
 			TimestampFormat: time.RFC3339Nano,
 		},
 	)
-	logger = l
-	return
+	return l
+}
+
+func GetLogger() logrus.FieldLogger {
+	return logger
 }
