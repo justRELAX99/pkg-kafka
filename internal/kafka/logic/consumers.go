@@ -1,7 +1,6 @@
 package logic
 
 import (
-	cKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/enkodio/pkg-kafka/internal/kafka/entity"
 	"github.com/enkodio/pkg-kafka/internal/pkg/logger"
 	"github.com/enkodio/pkg-kafka/kafka"
@@ -11,13 +10,13 @@ import (
 )
 
 type consumers struct {
-	config    cKafka.ConfigMap
+	config    entity.Config
 	consumers []*consumer
 	mwFuncs   []kafka.MiddlewareFunc
 	syncGroup *entity.SyncGroup
 }
 
-func newConsumers(config cKafka.ConfigMap) consumers {
+func newConsumers(config entity.Config) consumers {
 	return consumers{
 		config:    config,
 		consumers: make([]*consumer, 0),
@@ -41,7 +40,7 @@ func (c *consumers) getUniqByNameTopicSpecifications() []kafka.TopicSpecificatio
 
 func (c *consumers) addNewConsumer(handler kafka.Handler, topicSpecification kafka.TopicSpecifications) error {
 	newConsumer := newConsumer(topicSpecification, handler)
-	err := newConsumer.initConsumer(c.config)
+	err := newConsumer.initConsumer(c.config.ToKafkaConfig())
 	if err != nil {
 		return errors.Wrap(err, "cant init kafka consumer")
 	}
@@ -51,7 +50,7 @@ func (c *consumers) addNewConsumer(handler kafka.Handler, topicSpecification kaf
 
 func (c *consumers) createKafkaConsumers() error {
 	for i := range c.consumers {
-		err := c.consumers[i].initConsumer(c.config)
+		err := c.consumers[i].initConsumer(c.config.ToKafkaConfig())
 		if err != nil {
 			return errors.Wrap(err, "cant init kafka consumer")
 		}

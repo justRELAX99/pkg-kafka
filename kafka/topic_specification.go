@@ -14,6 +14,7 @@ type Specifications interface {
 	GetNumPartitions() int
 	GetReplicationFactor() int
 	GetCheckError() bool
+	GetWithUniqGroupId() bool
 }
 
 type TopicSpecifications struct {
@@ -21,6 +22,7 @@ type TopicSpecifications struct {
 	NumPartitions     int
 	ReplicationFactor int
 	CheckError        bool
+	WithUniqGroupId   bool
 }
 
 func NewTopicSpecifications(specifications Specifications) TopicSpecifications {
@@ -29,6 +31,7 @@ func NewTopicSpecifications(specifications Specifications) TopicSpecifications {
 		NumPartitions:     specifications.GetNumPartitions(),
 		ReplicationFactor: specifications.GetReplicationFactor(),
 		CheckError:        specifications.GetCheckError(),
+		WithUniqGroupId:   specifications.GetWithUniqGroupId(),
 	}
 }
 
@@ -55,4 +58,8 @@ func (t *TopicSpecifications) GetReplicationFactor() int {
 
 func (t *TopicSpecifications) GetCheckError() bool {
 	return t.CheckError
+}
+
+func (t *TopicSpecifications) GetWithUniqGroupId() bool {
+	return t.WithUniqGroupId
 }

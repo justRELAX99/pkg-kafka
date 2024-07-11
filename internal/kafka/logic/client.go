@@ -34,7 +34,7 @@ func NewClient(
 	return &Client{
 		serviceName: serviceName,
 		producer:    newProducer(producerConfig.ToKafkaConfig()),
-		consumers:   newConsumers(consumerConfig.ToKafkaConfig()),
+		consumers:   newConsumers(consumerConfig),
 		topicPrefix: prefix,
 	}
 }

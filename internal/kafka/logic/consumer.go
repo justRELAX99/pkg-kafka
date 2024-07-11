@@ -11,7 +11,9 @@ import (
 )
 
 type consumer struct {
-	handler kafka.Handler
+	handler      kafka.Handler
+	uniqGroupId  string
+	uniqClientId string
 	kafka.TopicSpecifications
 	*cKafka.Consumer
 }
@@ -20,14 +22,23 @@ func newConsumer(
 	topicSpecifications kafka.TopicSpecifications,
 	handler kafka.Handler,
 ) *consumer {
-	return &consumer{
+	c := &consumer{
 		TopicSpecifications: topicSpecifications,
 		handler:             handler,
 	}
+	if topicSpecifications.WithUniqGroupId {
+		c.uniqGroupId = uuid.New().String()
+	}
+	c.uniqClientId = uuid.New().String()
+	return c
 }
 
 func (c *consumer) initConsumer(config cKafka.ConfigMap) error {
-	config["client.id"] = uuid.New().String()
+	if c.uniqGroupId != "" {
+		config["group.id"] = c.uniqGroupId
+	}
+	config["client.id"] = c.uniqClientId
+
 	// Создаём консумера
 	kafkaConsumer, err := cKafka.NewConsumer(&config)
 	if err != nil {

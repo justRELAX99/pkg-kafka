@@ -20,6 +20,7 @@ func RunBase(configSettings configEntity.Settings, serviceName string) {
 		Topic:             testTopic,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
+		WithUniqGroupId:   true,
 	})
 	k.Pre(
 		getTestMiddleware(),
