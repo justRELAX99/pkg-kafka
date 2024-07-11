@@ -101,7 +101,7 @@ func (c *consumers) reconnect() {
 	for {
 		err := c.createKafkaConsumers()
 		if err != nil {
-			logger.FromContext(nil).WithError(err).Error("cant init consumers")
+			log.WithError(err).Error("cant init consumers")
 			time.Sleep(reconnectTime)
 			continue
 		}
