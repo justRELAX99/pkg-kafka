@@ -19,7 +19,7 @@ type producer struct {
 }
 
 func newProducer(config cKafka.ConfigMap) *producer {
-	config["client.id"] = uuid.New().String()
+	config.SetKey("client.id", uuid.New().String())
 	return &producer{
 		config:    config,
 		syncGroup: entity.NewSyncGroup(),

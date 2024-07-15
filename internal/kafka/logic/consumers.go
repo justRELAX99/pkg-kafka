@@ -39,8 +39,8 @@ func (c *consumers) getUniqByNameTopicSpecifications() []kafka.TopicSpecificatio
 }
 
 func (c *consumers) addNewConsumer(handler kafka.Handler, topicSpecification kafka.TopicSpecifications) error {
-	newConsumer := newConsumer(topicSpecification, handler)
-	err := newConsumer.initConsumer(c.config.ToKafkaConfig())
+	newConsumer := newConsumer(topicSpecification, handler, c.config.ToKafkaConfig())
+	err := newConsumer.initConsumer()
 	if err != nil {
 		return errors.Wrap(err, "cant init kafka consumer")
 	}
@@ -48,9 +48,9 @@ func (c *consumers) addNewConsumer(handler kafka.Handler, topicSpecification kaf
 	return nil
 }
 
-func (c *consumers) createKafkaConsumers() error {
+func (c *consumers) initConsumers() error {
 	for i := range c.consumers {
-		err := c.consumers[i].initConsumer(c.config.ToKafkaConfig())
+		err := c.consumers[i].initConsumer()
 		if err != nil {
 			return errors.Wrap(err, "cant init kafka consumer")
 		}
@@ -65,7 +65,7 @@ func (c *consumers) stopConsumers() {
 	}
 }
 
-func (c *consumers) initConsumers() {
+func (c *consumers) startConsumers() {
 	once := &sync.Once{}
 	c.syncGroup.NewDoneChan()
 	// Запускаем каждого консумера в отдельной горутине
@@ -73,6 +73,7 @@ func (c *consumers) initConsumers() {
 		c.syncGroup.Add(1)
 		go func(consumer *consumer, syncGroup *entity.SyncGroup) {
 			err := consumer.startConsume(syncGroup, c.mwFuncs)
+			logger.GetLogger().WithError(err).Error("consuming error")
 			c.syncGroup.Done()
 			if err != nil {
 				once.Do(func() {
@@ -98,7 +99,7 @@ func (c *consumers) reconnect() {
 
 	// Запускаем новые консумеры
 	for {
-		err := c.createKafkaConsumers()
+		err := c.initConsumers()
 		if err != nil {
 			log.WithError(err).Error("cant init consumers")
 			time.Sleep(reconnectTime)
@@ -108,5 +109,5 @@ func (c *consumers) reconnect() {
 		break
 	}
 
-	c.initConsumers()
+	c.startConsumers()
 }

@@ -50,7 +50,7 @@ func (c *Client) Start() (err error) {
 			return
 		}
 	}
-	c.consumers.initConsumers()
+	c.consumers.startConsumers()
 	return
 }
 
