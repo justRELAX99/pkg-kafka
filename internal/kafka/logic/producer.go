@@ -108,7 +108,7 @@ func (p *producer) publish(ctx context.Context, message kafka.Message) (err erro
 
 	err = p.produce(
 		ctx,
-		message.ToKafkaMessage(),
+		message.ToProducerMessage(),
 		deliveryChannel,
 	)
 	if err != nil {

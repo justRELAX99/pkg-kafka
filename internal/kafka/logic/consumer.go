@@ -80,7 +80,10 @@ func (c *consumer) startConsume(syncGroup *entity.SyncGroup, mwFuncs []kafka.Mid
 				}
 				return errors.Wrap(err, "cant read kafka message")
 			}
-			err = handler(context.Background(), entity.NewByKafkaMessage(msg))
+			if msg.TopicPartition.Error != nil {
+				log.WithError(msg.TopicPartition.Error).Error("err in consumed message")
+			}
+			err = handler(context.Background(), entity.FromConsumerMessage(msg))
 			if err != nil && c.CheckError {
 				log.WithError(err).Debug("try to read message again")
 				c.rollbackConsumerTransaction(msg.TopicPartition)

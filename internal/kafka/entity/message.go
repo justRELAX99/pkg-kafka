@@ -5,12 +5,16 @@ import (
 	"github.com/enkodio/pkg-kafka/kafka"
 )
 
-func NewByKafkaMessage(message *cKafka.Message) kafka.Message {
+func FromConsumerMessage(message *cKafka.Message) kafka.Message {
 	return kafka.Message{
 		Headers: newByKafkaHeaders(message.Headers),
 		Body:    message.Value,
 		Topic:   *message.TopicPartition.Topic,
 		Key:     message.Key,
+		ConsumerMetadata: kafka.ConsumerMetadata{
+			Offset:    int64(message.TopicPartition.Offset),
+			Partition: message.TopicPartition.Partition,
+		},
 	}
 }
 
