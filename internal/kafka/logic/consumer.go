@@ -51,7 +51,7 @@ func (c *consumer) initConsumer() error {
 
 func (c *consumer) getRebalanceCb() cKafka.RebalanceCb {
 	return func(c *cKafka.Consumer, event cKafka.Event) error {
-		logger.GetLogger().Debugf("Rebalanced: %v; rebalanced protocol: %v;",
+		logger.GetLogger().Infof("Rebalanced: %v; rebalanced protocol: %v;",
 			event.String(),
 			c.GetRebalanceProtocol())
 		return nil
