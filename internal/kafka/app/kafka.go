@@ -6,6 +6,6 @@ import (
 )
 
 func Run(configSettings configEntity.Settings, serviceName string) {
-	examples.RunBase(configSettings, serviceName)
+	examples.RunRebalanced(configSettings, serviceName)
 	select {}
 }

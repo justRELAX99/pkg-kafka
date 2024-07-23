@@ -1,6 +1,6 @@
 {
   "kafkaProducer": {
-    "bootstrap.servers": "localhost:9092",
+    "bootstrap.servers": "localhost:9091,localhost:9092,localhost:9093",
     "queue.buffering.max.messages": 5000000,
     "linger.ms": 5,
     "acks": "all",
@@ -8,7 +8,7 @@
     "go.delivery.reports": true
   },
   "kafkaConsumer": {
-    "bootstrap.servers": "localhost:9092",
+    "bootstrap.servers": "localhost:9091,localhost:9092,localhost:9093",
     "group.id": "broker_transaction_outbox",
     "auto.offset.reset": "earliest",
     "allow.auto.create.topics": true,

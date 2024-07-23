@@ -8,7 +8,7 @@ import (
 
 func RunBase(configSettings configEntity.Settings, serviceName string) {
 	const (
-		testTopic = "test_topic"
+		testTopic = "test_topic3"
 	)
 
 	//broker clients
@@ -18,8 +18,8 @@ func RunBase(configSettings configEntity.Settings, serviceName string) {
 
 	testConsumer(k, testHandler("base"), kafka.TopicSpecifications{
 		Topic:             testTopic,
-		NumPartitions:     1,
-		ReplicationFactor: 1,
+		NumPartitions:     3,
+		ReplicationFactor: 3,
 		WithUniqGroupId:   true,
 	})
 	k.Pre(
@@ -109,5 +109,27 @@ func RunWithPublicPublishingData(configSettings configEntity.Settings, serviceNa
 		Value: []byte("2"),
 		Key:   "asdasd",
 	})
+	k.StopProduce()
+}
+
+func RunRebalanced(configSettings configEntity.Settings, serviceName string) {
+	const (
+		testTopic = "test_topic4"
+	)
+
+	//broker clients
+	var (
+		k = kafkaClient.NewClient(configSettings.KafkaProducer, configSettings.KafkaConsumer, serviceName, nil, "")
+	)
+
+	testConsumer(k, testHandler("base"), kafka.TopicSpecifications{
+		Topic:             testTopic,
+		NumPartitions:     3,
+		ReplicationFactor: 3,
+		WithUniqGroupId:   false,
+	})
+	kafkaClient.Start(k)
+	testProducer(k, testTopic, "test")
+	testProducer(k, testTopic, "test_2")
 	k.StopProduce()
 }
