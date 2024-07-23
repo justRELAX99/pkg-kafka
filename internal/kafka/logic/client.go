@@ -22,6 +22,7 @@ type Client struct {
 	topicPrefix string
 	consumers   consumers
 	producer    *producer
+	logEvent    logEvent
 }
 
 func NewClient(
@@ -31,12 +32,14 @@ func NewClient(
 	prefix string,
 ) *Client {
 	consumerConfig["group.id"] = serviceName
-	return &Client{
+	c := &Client{
 		serviceName: serviceName,
-		producer:    newProducer(producerConfig.ToKafkaConfig()),
+		producer:    newProducer(producerConfig),
 		consumers:   newConsumers(consumerConfig),
 		topicPrefix: prefix,
 	}
+	c.logEvent = newLogEvent(consumerConfig.GetLogChannel(), producerConfig.GetLogChannel())
+	return c
 }
 
 func (c *Client) Start() (err error) {
@@ -51,6 +54,7 @@ func (c *Client) Start() (err error) {
 		}
 	}
 	c.consumers.startConsumers()
+	c.logEvent.start()
 	return
 }
 
@@ -61,10 +65,12 @@ func (c *Client) Pre(mw ...kafka.MiddlewareFunc) {
 }
 
 func (c *Client) StopSubscribe() {
+	c.logEvent.stopConsumer()
 	c.consumers.stopConsumers()
 }
 
 func (c *Client) StopProduce() {
+	c.logEvent.stopProducer()
 	c.producer.stop()
 }
 

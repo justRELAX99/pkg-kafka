@@ -17,11 +17,13 @@ type consumers struct {
 }
 
 func newConsumers(config entity.Config) consumers {
-	return consumers{
+	c := consumers{
 		config:    config,
 		consumers: make([]*consumer, 0),
 		syncGroup: entity.NewSyncGroup(),
 	}
+	c.config.DefineLogChannel()
+	return c
 }
 
 func (c *consumers) getUniqByNameTopicSpecifications() []kafka.TopicSpecifications {
@@ -73,9 +75,9 @@ func (c *consumers) startConsumers() {
 		c.syncGroup.Add(1)
 		go func(consumer *consumer, syncGroup *entity.SyncGroup) {
 			err := consumer.startConsume(syncGroup, c.mwFuncs)
-			logger.GetLogger().WithError(err).Error("consuming error")
 			c.syncGroup.Done()
 			if err != nil {
+				logger.GetLogger().WithError(err).Error("consuming error")
 				once.Do(func() {
 					c.reconnect()
 				})

@@ -5,13 +5,15 @@
     "linger.ms": 5,
     "acks": "all",
     "socket.keepalive.enable": true,
-    "go.delivery.reports": true
+    "go.delivery.reports": true,
+    "go.logs.channel.enable": true
   },
   "kafkaConsumer": {
     "bootstrap.servers": "localhost:9091,localhost:9092,localhost:9093",
     "group.id": "broker_transaction_outbox",
     "auto.offset.reset": "earliest",
     "allow.auto.create.topics": true,
-    "socket.keepalive.enable": true
+    "socket.keepalive.enable": true,
+    "go.logs.channel.enable": true
   }
 }

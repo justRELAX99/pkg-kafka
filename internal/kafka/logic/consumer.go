@@ -28,9 +28,9 @@ func newConsumer(
 		config:              config,
 	}
 	if topicSpecifications.WithUniqGroupId {
-		c.config.SetKey("group.id", uuid.New().String())
+		_ = c.config.SetKey("group.id", uuid.New().String())
 	}
-	c.config.SetKey("client.id", uuid.New().String())
+	_ = c.config.SetKey("client.id", uuid.New().String())
 	return c
 }
 

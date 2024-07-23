@@ -132,4 +132,5 @@ func RunRebalanced(configSettings configEntity.Settings, serviceName string) {
 	testProducer(k, testTopic, "test")
 	testProducer(k, testTopic, "test_2")
 	k.StopProduce()
+	k.StopSubscribe()
 }

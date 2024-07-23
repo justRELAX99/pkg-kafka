@@ -18,3 +18,19 @@ func (c Config) ToKafkaConfig() kafka.ConfigMap {
 	}
 	return kafkaConfig
 }
+
+func (c Config) DefineLogChannel() {
+	withLogs, _ := c["go.logs.channel.enable"].(bool)
+	if !withLogs {
+		return
+	}
+	c["go.logs.channel"] = make(chan kafka.LogEvent, 10000)
+	if _, ok := c["debug"]; !ok {
+		c["debug"] = "all"
+	}
+}
+
+func (c Config) GetLogChannel() chan kafka.LogEvent {
+	channel, _ := c["go.logs.channel"].(chan kafka.LogEvent)
+	return channel
+}

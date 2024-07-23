@@ -18,12 +18,15 @@ type producer struct {
 	prePublish    []kafka.Pre
 }
 
-func newProducer(config cKafka.ConfigMap) *producer {
-	config.SetKey("client.id", uuid.New().String())
-	return &producer{
-		config:    config,
+func newProducer(config entity.Config) *producer {
+	config.DefineLogChannel()
+	kafkaConfig := config.ToKafkaConfig()
+	_ = kafkaConfig.SetKey("client.id", uuid.New().String())
+	p := &producer{
+		config:    kafkaConfig,
 		syncGroup: entity.NewSyncGroup(),
 	}
+	return p
 }
 
 func (p *producer) initProducer() (err error) {
